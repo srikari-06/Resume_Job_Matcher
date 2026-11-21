@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ResumeMatch AI</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{
+primary:"#3730a3", "primary-light":"#eef2ff", background:"#f8fafc",
+surface:"#ffffff", ink:"#0f172a", muted:"#64748b", success:"#16a34a",
+warning:"#d97706", danger:"#dc2626"
+}}}}
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+[x-cloak]{display:none!important}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.card{background:white;border:1px solid #e2e8f0;border-radius:18px;box-shadow:0 8px 30px rgba(15,23,42,.05)}
+.btn{border-radius:12px;padding:.65rem 1rem;font-weight:600;transition:.2s}
+.btn-primary{background:#3730a3;color:white}.btn-primary:hover{background:#312e81}
+.btn-secondary{background:#eef2ff;color:#3730a3}.btn-secondary:hover{background:#e0e7ff}
+.badge{display:inline-flex;align-items:center;border-radius:999px;padding:.25rem .65rem;font-size:.75rem;font-weight:700}
+</style>
+</head>
+
+<body class="bg-background text-ink" x-data="app()" x-init="init()">
+
+<!-- LOGIN -->
+<template x-if="!loggedIn">
+<div class="min-h-screen grid lg:grid-cols-2">
+  <section class="hidden lg:flex bg-primary text-white p-12 flex-col justify-between">
+    <div>
+      <div class="text-2xl font-bold">ResumeMatch AI</div>
+      <div class="mt-20 max-w-lg">
+        <p class="text-sm uppercase tracking-widest opacity-70">AI recruitment platform</p>
+        <h1 class="text-5xl font-bold mt-4 leading-tight">Find the right talent, fairly.</h1>
+        <p class="mt-6 text-indigo-100 text-lg leading-8">Semantic resume matching, skill-gap analysis, blind matching and explainable recruitment insights in one workspace.</p>
+      </div>
+    </div>
+    <p class="text-sm text-indigo-200">Intelligent hiring. Fairer decisions.</p>
+  </section>
+  <section class="flex items-center justify-center p-6">
+    <div class="w-full max-w-md">
+      <div class="lg:hidden text-2xl font-bold text-primary mb-12">ResumeMatch AI</div>
+      <div class="card p-8">
+        <h2 class="text-2xl font-bold">Welcome back</h2>
+        <p class="text-muted mt-2">Sign in to your recruiter workspace.</p>
+        <form @submit.prevent="login()" class="mt-8 space-y-5">
+          <div>
+            <label class="text-sm font-semibold">Email</label>
+            <input x-model="email" type="email" class="mt-2 w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-200" placeholder="admin@resumematch.ai">
+          </div>
+          <div>
+            <label class="text-sm font-semibold">Password</label>
+            <input x-model="password" type="password" class="mt-2 w-full border border-slate-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-indigo-200" placeholder="••••••••">
+          </div>
+          <div x-show="loginError" class="text-sm text-red-600 bg-red-50 rounded-xl p-3">Invalid email or password. Try admin@resumematch.ai / admin123.</div>
+          <div class="flex items-center justify-between text-sm">
+            <label class="flex gap-2 items-center"><input type="checkbox"> Remember me</label>
+            <span class="text-primary font-semibold">Forgot password?</span>
+          </div>
+          <button class="btn btn-primary w-full">Sign In</button>
+          <button type="button" @click="demoLogin()" class="btn btn-secondary w-full">Continue as Demo Recruiter</button>
+        </form>
+        <div class="mt-6 text-xs text-muted text-center">Demo: admin@resumematch.ai / admin123</div>
+      </div>
+    </div>
+  </section>
+</div>
+</template>
+
+<!-- APP -->
+<template x-if="loggedIn">
+<div class="min-h-screen flex">
+  <aside class="hidden md:flex w-64 bg-white border-r border-slate-200 fixed inset-y-0 left-0 flex-col z-20">
+    <div class="px-6 py-6 text-xl font-bold text-primary">ResumeMatch AI</div>
+    <nav class="px-3 space-y-1 flex-1">
+      <template x-for="item in nav" :key="item.route">
+        <a :href="'#'+item.route" :class="route===item.route?'bg-primary-light text-primary font-semibold':'text-slate-600 hover:bg-slate-50'" class="flex items-center gap-3 px-4 py-3 rounded-xl">
+          <span x-text="item.icon"></span><span x-text="item.label"></span>
+        </a>
+      </template>
+    </nav>
+    <div class="p-4 border-t">
+      <div class="text-sm font-semibold">Alex Morgan</div>
+      <div class="text-xs text-muted mt-1">Recruiter</div>
+      <button @click="logout()" class="mt-3 text-sm text-red-600">Logout</button>
+    </div>
+  </aside>
+
+  <div class="flex-1 md:ml-64">
+    <header class="h-16 bg-white border-b sticky top-0 z-10 px-4 md:px-8 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button @click="mobileMenu=!mobileMenu" class="md:hidden text-xl">☰</button>
+        <div class="text-sm text-muted hidden sm:block">Recruiter workspace</div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button @click="notifications=!notifications" class="relative p-2">🔔<span x-show="notifications" class="absolute right-0 top-0 w-2 h-2 bg-red-500 rounded-full"></span></button>
+        <button @click="go('create-job')" class="btn btn-primary text-sm">+ Create New Job</button>
+      </div>
+    </header>
+
+    <div x-show="mobileMenu" x-cloak class="md:hidden bg-white border-b p-3 space-y-1">
+      <template x-for="item in nav" :key="item.route"><a @click="mobileMenu=false" :href="'#'+item.route" class="block px-3 py-2 rounded-lg hover:bg-slate-50" x-text="item.label"></a></template>
+      <button @click="logout()" class="text-red-600 px-3 py-2">Logout</button>
+    </div>
+
+    <main class="p-4 md:p-8">
+
+      <!-- DASHBOARD -->
+      <section x-show="route==='dashboard'">
+        <div class="flex flex-wrap justify-between gap-4">
+          <div><h1 class="text-3xl font-bold">Good morning, Alex 👋</h1><p class="text-muted mt-2">Here's an overview of your recruitment activity.</p></div>
+        </div>
+        <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-5 mt-8">
+          <template x-for="s in stats" :key="s.label">
+            <div @click="go(s.route)" class="card p-5 cursor-pointer hover:-translate-y-0.5 transition">
+              <div class="flex justify-between"><span class="text-muted text-sm" x-text="s.label"></span><span x-text="s.icon"></span></div>
+              <div class="text-3xl font-bold mt-3" x-text="s.value"></div><div class="text-xs text-green-600 mt-2" x-text="s.trend"></div>
+            </div>
+          </template>
+        </div>
+        <div class="grid xl:grid-cols-3 gap-6 mt-6">
+          <div class="card xl:col-span-2 p-6">
+            <div class="flex justify-between items-center"><h2 class="font-bold text-lg">Recent Jobs</h2><a href="#jobs" class="text-primary text-sm font-semibold">View all</a></div>
+            <div class="overflow-x-auto mt-4"><table class="w-full text-sm"><thead><tr class="text-left text-muted border-b"><th class="py-3">Job</th><th>Department</th><th>Candidates</th><th>Match</th><th>Status</th></tr></thead>
+            <tbody><template x-for="j in jobs" :key="j.id"><tr @click="selectJob(j)" class="border-b last:border-0 hover:bg-slate-50 cursor-pointer"><td class="py-4 font-semibold" x-text="j.title"></td><td x-text="j.department"></td><td x-text="j.candidates"></td><td x-text="j.match+'%'"></td><td><span class="badge" :class="j.status==='Active'?'bg-green-50 text-green-700':'bg-slate-100 text-slate-600'" x-text="j.status"></span></td></tr></template></tbody></table></div>
+          </div>
+          <div class="card p-6"><h2 class="font-bold text-lg">Match Score Distribution</h2><div class="h-48 flex items-end gap-3 mt-8"><template x-for="(v,i) in [48,72,91,78,55,38]" :key="i"><div class="flex-1 bg-indigo-200 rounded-t-lg" :style="`height:${v}%`"></div></template></div><div class="grid grid-cols-3 gap-2 mt-6 text-center text-xs"><div><b>89%</b><br>Semantic</div><div><b>86%</b><br>Skills</div><div><b>82%</b><br>Experience</div></div></div>
+        </div>
+      </section>
+
+      <!-- JOBS -->
+      <section x-show="route==='jobs'">
+        <div class="flex justify-between items-center"><div><h1 class="text-3xl font-bold">Jobs</h1><p class="text-muted mt-2">Create and manage your job openings.</p></div><button @click="go('create-job')" class="btn btn-primary">+ Create New Job</button></div>
+        <div class="card p-4 mt-6 flex gap-3"><input x-model="jobSearch" class="flex-1 border rounded-xl p-3" placeholder="Search jobs..."><select x-model="jobFilter" class="border rounded-xl p-3"><option>All</option><option>Active</option><option>Closed</option></select></div>
+        <div class="grid md:grid-cols-2 gap-5 mt-5"><template x-for="j in filteredJobs" :key="j.id"><div class="card p-6 cursor-pointer hover:shadow-lg" @click="selectJob(j)"><div class="flex justify-between"><div><h3 class="font-bold text-lg" x-text="j.title"></h3><p class="text-muted mt-1" x-text="j.department+' · '+j.location"></p></div><span class="badge bg-green-50 text-green-700" x-text="j.status"></span></div><div class="grid grid-cols-3 gap-4 mt-6 text-sm"><div><span class="text-muted block">Experience</span><b x-text="j.experience"></b></div><div><span class="text-muted block">Applicants</span><b x-text="j.candidates"></b></div><div><span class="text-muted block">Avg Match</span><b x-text="j.match+'%'"></b></div></div><button class="btn btn-secondary mt-6 w-full">Open Matcher</button></div></template></div>
+      </section>
+
+      <!-- CREATE JOB -->
+      <section x-show="route==='create-job'">
+        <h1 class="text-3xl font-bold">Create New Job</h1><p class="text-muted mt-2">Define the requirements for your new opening.</p>
+        <div class="card p-6 mt-6 max-w-4xl">
+          <div class="grid md:grid-cols-2 gap-5">
+            <input x-model="newJob.title" class="border rounded-xl p-3" placeholder="Job Title">
+            <input x-model="newJob.department" class="border rounded-xl p-3" placeholder="Department">
+            <input x-model="newJob.location" class="border rounded-xl p-3" placeholder="Location">
+            <select x-model="newJob.type" class="border rounded-xl p-3"><option>Full-time</option><option>Part-time</option><option>Contract</option></select>
+            <input x-model="newJob.experience" class="border rounded-xl p-3" placeholder="Minimum Experience">
+            <input x-model="newJob.education" class="border rounded-xl p-3" placeholder="Minimum Education">
+          </div>
+          <div class="mt-5"><label class="font-semibold text-sm">Required Skills</label><div class="flex flex-wrap gap-2 mt-2"><template x-for="(s,i) in newJob.skills" :key="s"><span class="badge bg-indigo-50 text-primary" x-text="s+' ×'" @click="newJob.skills.splice(i,1)"></span></template></div><input @keydown.enter.prevent="addSkill($event)" class="border rounded-xl p-3 mt-3 w-full" placeholder="Type a skill and press Enter"></div>
+          <textarea x-model="newJob.description" rows="7" class="border rounded-xl p-3 mt-5 w-full" placeholder="Job Description"></textarea>
+          <div class="flex gap-3 mt-5"><button @click="saveDraft()" class="btn btn-secondary">Save as Draft</button><button @click="continueMatcher()" class="btn btn-primary">Continue to Resume Matching</button></div>
+        </div>
+      </section>
+
+      <!-- MATCHER -->
+      <section x-show="route==='matcher'">
+        <h1 class="text-3xl font-bold">Resume Matcher</h1><p class="text-muted mt-2">Upload resumes and compare candidates against a job description using semantic matching.</p>
+        <div class="card p-6 mt-6"><div class="flex justify-between flex-wrap gap-3"><div><div class="text-sm text-muted">Selected Job</div><h2 class="text-xl font-bold" x-text="selectedJob?.title || 'Python Developer'"></h2></div><div class="flex flex-wrap gap-2"><template x-for="s in selectedSkills" :key="s"><span class="badge bg-indigo-50 text-primary" x-text="s"></span></template></div></div>
+          <label class="block mt-8 border-2 border-dashed border-indigo-200 bg-indigo-50/30 rounded-2xl p-12 text-center cursor-pointer"><input type="file" multiple accept=".pdf,.docx" class="hidden" @change="filesChanged($event)"><div class="text-4xl">📄</div><div class="font-bold text-lg mt-3">Drop resumes here</div><div class="text-muted">or click to browse · PDF, DOCX</div></label>
+          <div class="mt-5 space-y-2"><template x-for="(f,i) in files" :key="i"><div class="flex items-center justify-between border rounded-xl p-3"><div><b x-text="f.name"></b><span class="text-xs text-muted ml-2" x-text="f.size"></span></div><button @click="files.splice(i,1)" class="text-red-500">Remove</button></div></template></div>
+          <button @click="startAnalysis()" :disabled="!files.length" class="btn btn-primary mt-6 disabled:opacity-40">Analyze Resumes</button>
+        </div>
+      </section>
+
+      <!-- ANALYSIS -->
+      <section x-show="route==='analysis'" class="max-w-3xl mx-auto">
+        <div class="card p-10 text-center"><div class="text-5xl animate-spin">◌</div><h1 class="text-3xl font-bold mt-5">Analyzing Candidates</h1><p class="text-muted mt-2">ResumeMatch AI is evaluating the uploaded resumes.</p><div class="text-left mt-8 space-y-4"><template x-for="(s,i) in analysisSteps" :key="s"><div class="flex gap-3 items-center"><span class="w-7 h-7 rounded-full flex items-center justify-center" :class="i<analysisStep?'bg-green-100 text-green-700':i===analysisStep?'bg-indigo-100 text-primary':'bg-slate-100 text-slate-400'" x-text="i<analysisStep?'✓':i===analysisStep?'●':'○'"></span><span x-text="s"></span></div></template></div><div class="h-2 bg-slate-100 rounded-full mt-8"><div class="h-2 bg-primary rounded-full transition-all" :style="`width:${analysisProgress}%`"></div></div></div>
+      </section>
+
+      <!-- RANKINGS -->
+      <section x-show="route==='rankings'">
+        <div class="flex justify-between flex-wrap gap-3"><div><h1 class="text-3xl font-bold">Candidate Rankings</h1><p class="text-muted mt-2" x-text="candidates.length+' candidates analyzed'"></p></div><button @click="go('compare')" class="btn btn-primary">Compare Candidates</button></div>
+        <div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-5 mt-6"><template x-for="s in rankingStats" :key="s[0]"><div class="card p-5"><span class="text-muted text-sm" x-text="s[0]"></span><div class="text-3xl font-bold mt-2" x-text="s[1]"></div></div></template></div>
+        <div class="card mt-6 overflow-x-auto"><div class="p-5 flex gap-2 flex-wrap"><template x-for="f in ['All','Strong Match','Medium Match','Potential Bias','Shortlisted']" :key="f"><button @click="rankFilter=f" :class="rankFilter===f?'btn btn-primary':'btn btn-secondary'" class="btn text-sm" x-text="f"></button></template></div><table class="w-full text-sm"><thead class="bg-slate-50"><tr><th class="p-4 text-left">#</th><th class="p-4 text-left">Candidate</th><th class="p-4">Overall</th><th class="p-4">Semantic</th><th class="p-4">Skills</th><th class="p-4">Experience</th><th class="p-4">Bias</th><th class="p-4">Status</th></tr></thead><tbody><template x-for="(c,i) in filteredCandidates" :key="c.id"><tr @click="selectedCandidate=c;go('candidate')" class="border-t hover:bg-slate-50 cursor-pointer"><td class="p-4" x-text="i+1"></td><td class="p-4 font-semibold" x-text="c.name"></td><td class="p-4 font-bold text-primary" x-text="c.overall+'%'"></td><td class="p-4" x-text="c.semantic+'%'"></td><td class="p-4" x-text="c.skillsScore+'%'"></td><td class="p-4" x-text="c.experience+'%'"></td><td class="p-4"><span class="badge" :class="riskClass(c.bias)" x-text="c.bias"></span></td><td class="p-4" x-text="c.status"></td></tr></template></tbody></table></div>
+      </section>
+
+      <!-- CANDIDATE -->
+      <section x-show="route==='candidate'">
+        <button @click="go('rankings')" class="text-primary font-semibold mb-5">← Back to Rankings</button>
+        <div class="flex justify-between flex-wrap gap-4"><div><h1 class="text-3xl font-bold" x-text="selectedCandidate.name"></h1><p class="text-muted mt-1">Candidate profile & AI analysis</p></div><div class="text-center"><div class="text-4xl font-bold text-primary" x-text="selectedCandidate.overall+'%'"></div><div class="text-xs text-muted">Overall Match</div></div></div>
+        <div class="grid md:grid-cols-4 gap-4 mt-6"><template x-for="s in [['Semantic',selectedCandidate.semantic],['Skill Match',selectedCandidate.skillsScore],['Experience',selectedCandidate.experience],['Education',selectedCandidate.education]]" :key="s[0]"><div class="card p-5"><div class="text-muted text-sm" x-text="s[0]"></div><div class="text-2xl font-bold mt-2" x-text="s[1]+'%'"></div><div class="h-2 bg-slate-100 rounded mt-3"><div class="h-2 bg-primary rounded" :style="`width:${s[1]}%`"></div></div></div></template></div>
+        <div class="grid lg:grid-cols-2 gap-6 mt-6"><div class="card p-6"><h2 class="font-bold">Matched Skills</h2><div class="flex flex-wrap gap-2 mt-4"><template x-for="s in selectedCandidate.matched" :key="s"><span class="badge bg-green-50 text-green-700">✓ <span x-text="s"></span></span></template></div><h2 class="font-bold mt-7">Missing Skills</h2><div class="flex flex-wrap gap-2 mt-4"><template x-for="s in selectedCandidate.missing" :key="s"><span class="badge bg-amber-50 text-amber-700" x-text="s"></span></template></div></div>
+        <div class="card p-6"><h2 class="font-bold">AI Summary</h2><p class="text-muted leading-7 mt-4">Candidate demonstrates strong alignment with the technical requirements, particularly Python, Flask, SQL and Machine Learning. The candidate meets the experience and education requirements. The main gaps are AWS and Docker.</p><div class="flex flex-wrap gap-3 mt-6"><button @click="shortlist()" class="btn btn-primary" x-text="selectedCandidate.status==='Shortlisted'?'✓ Shortlisted':'Shortlist Candidate'"></button><button @click="go('skills')" class="btn btn-secondary">Skill Gap</button><button @click="go('blind')" class="btn btn-secondary">Blind Analysis</button><button @click="go('explain')" class="btn btn-secondary">Why this score?</button></div></div></div>
+      </section>
+
+      <!-- SKILLS -->
+      <section x-show="route==='skills'">
+        <button @click="go('candidate')" class="text-primary font-semibold">← Back to Candidate</button><h1 class="text-3xl font-bold mt-5">Skill Gap Analysis</h1><p class="text-muted mt-2">Required skills versus candidate capabilities.</p>
+        <div class="grid lg:grid-cols-2 gap-6 mt-6"><div class="card p-6"><h2 class="font-bold">Required Skills</h2><div class="flex flex-wrap gap-2 mt-4"><template x-for="s in selectedSkills" :key="s"><span class="badge bg-indigo-50 text-primary" x-text="s"></span></template></div></div><div class="card p-6"><h2 class="font-bold">Candidate Skills</h2><div class="flex flex-wrap gap-2 mt-4"><template x-for="s in selectedCandidate.matched" :key="s"><span class="badge bg-green-50 text-green-700" x-text="s"></span></template></div></div></div>
+        <div class="card p-6 mt-6"><div class="flex justify-between"><span class="font-bold">Skill Coverage</span><b>71%</b></div><div class="h-3 bg-slate-100 rounded-full mt-4"><div class="h-3 bg-primary rounded-full" style="width:71%"></div></div><h3 class="font-bold mt-8">Recommended Development Areas</h3><div class="flex gap-2 mt-3"><span class="badge bg-amber-50 text-amber-700">AWS</span><span class="badge bg-amber-50 text-amber-700">Docker</span></div></div>
+      </section>
+
+      <!-- BLIND -->
+      <section x-show="route==='blind'">
+        <button @click="go('candidate')" class="text-primary font-semibold">← Back to Candidate</button><h1 class="text-3xl font-bold mt-5">Blind Resume Matching</h1><p class="text-muted mt-2">Compare matching before and after removing potentially irrelevant personal information.</p>
+        <div class="grid lg:grid-cols-2 gap-6 mt-6"><div class="card p-6"><h2 class="font-bold">Original Resume</h2><div class="space-y-3 mt-5 text-sm"><p>Name: Candidate 001</p><p>Age: 24</p><p>Gender: Female</p><p>Location: Hyderabad</p><p>Education: B.Tech</p><p>Skills: Python, SQL, Machine Learning</p></div></div><div class="card p-6"><h2 class="font-bold">Blind Resume</h2><div class="space-y-3 mt-5 text-sm"><p>Candidate ID: C001</p><p>Education: B.Tech</p><p>Skills: Python, SQL, Machine Learning</p><p class="text-muted mt-5">Name, gender indicators, age, location and photo removed.</p></div></div></div>
+        <div class="card p-6 mt-6"><div class="grid sm:grid-cols-3 gap-6 text-center"><div><div class="text-muted text-sm">Original</div><div class="text-4xl font-bold text-primary mt-2">94%</div></div><div><div class="text-muted text-sm">Blind</div><div class="text-4xl font-bold text-primary mt-2">93%</div></div><div><div class="text-muted text-sm">Difference</div><div class="text-4xl font-bold mt-2">1%</div></div></div><div class="mt-6 bg-green-50 text-green-700 p-4 rounded-xl">Bias Risk: LOW</div></div>
+      </section>
+
+      <!-- BIAS -->
+      <section x-show="route==='bias-check'">
+        <h1 class="text-3xl font-bold">Bias Check</h1><p class="text-muted mt-2">Identify score changes after anonymization.</p>
+        <div class="card p-6 mt-6"><div class="flex items-center justify-between"><div><div class="text-sm text-muted">Current signal</div><div class="text-4xl font-bold text-green-600 mt-2">LOW</div></div><div class="text-right"><div class="text-sm text-muted">Selected Candidate Difference</div><div class="text-3xl font-bold mt-2">1%</div></div></div></div>
+        <div class="card mt-6 overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50"><tr><th class="p-4 text-left">Candidate</th><th class="p-4">Original</th><th class="p-4">Blind</th><th class="p-4">Difference</th><th class="p-4">Risk</th></tr></thead><tbody><template x-for="c in candidates" :key="c.id"><tr class="border-t cursor-pointer hover:bg-slate-50" @click="selectedCandidate=c;go('blind')"><td class="p-4 font-semibold" x-text="c.name"></td><td class="p-4 text-center" x-text="c.original+'%'"></td><td class="p-4 text-center" x-text="c.blind+'%'"></td><td class="p-4 text-center" x-text="Math.abs(c.original-c.blind)+'%'"></td><td class="p-4 text-center"><span class="badge" :class="riskClass(c.bias)" x-text="c.bias"></span></td></tr></template></tbody></table></div>
+        <div class="mt-5 text-sm text-muted bg-slate-100 rounded-xl p-4">Score differences are indicators for further review, not proof of discrimination or unfair treatment.</div>
+      </section>
+
+      <!-- EXPLAIN -->
+      <section x-show="route==='explain'">
+        <button @click="go('candidate')" class="text-primary font-semibold">← Back to Candidate</button><h1 class="text-3xl font-bold mt-5">Why did this candidate receive this score?</h1><div class="card p-6 mt-6"><div class="text-5xl font-bold text-primary" x-text="selectedCandidate.overall+'%'"></div><p class="text-muted mt-2">Explainable match score for <span class="font-semibold" x-text="selectedCandidate.name"></span></p><div class="grid sm:grid-cols-4 gap-4 mt-8"><template x-for="s in [['Semantic',40],['Skills',30],['Experience',20],['Education',10]]" :key="s[0]"><div><div class="flex justify-between text-sm"><span x-text="s[0]"></span><b x-text="s[1]+'%'"></b></div><div class="h-2 bg-slate-100 rounded mt-2"><div class="h-2 bg-primary rounded" :style="`width:${s[1]*2.5}%`"></div></div></div></template></div></div><div class="grid lg:grid-cols-2 gap-6 mt-6"><div class="card p-6"><h2 class="font-bold">Strong Contributors</h2><ul class="mt-4 space-y-3"><li>✓ Strong Python experience</li><li>✓ Relevant Flask projects</li><li>✓ SQL experience</li><li>✓ Machine Learning experience</li><li>✓ Relevant REST API experience</li></ul></div><div class="card p-6"><h2 class="font-bold">Missing Requirements</h2><div class="flex gap-2 mt-4"><span class="badge bg-amber-50 text-amber-700">AWS</span><span class="badge bg-amber-50 text-amber-700">Docker</span></div><p class="text-muted mt-6 leading-7">The candidate is a strong match because the resume demonstrates substantial overlap with the job's technical requirements.</p></div></div>
+      </section>
+
+      <!-- COMPARE -->
+      <section x-show="route==='compare'">
+        <div class="flex justify-between"><div><h1 class="text-3xl font-bold">Compare Candidates</h1><p class="text-muted mt-2">Compare 2–4 candidates side by side.</p></div><button @click="go('rankings')" class="btn btn-secondary">Back to Rankings</button></div>
+        <div class="card mt-6 overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50"><tr><th class="p-4 text-left">Metric</th><template x-for="c in candidates.slice(0,3)" :key="c.id"><th class="p-4" x-text="c.name"></th></template></tr></thead><tbody><template x-for="row in [['Overall Match','overall'],['Semantic Match','semantic'],['Skill Match','skillsScore'],['Experience','experience']]" :key="row[0]"><tr class="border-t"><td class="p-4 font-semibold" x-text="row[0]"></td><template x-for="c in candidates.slice(0,3)" :key="c.id"><td class="p-4 text-center" x-text="c[row[1]]+'%'"></td></template></tr></template><tr class="border-t"><td class="p-4 font-semibold">Bias Risk</td><template x-for="c in candidates.slice(0,3)" :key="c.id"><td class="p-4 text-center"><span class="badge" :class="riskClass(c.bias)" x-text="c.bias"></span></td></template></tr></tbody></table></div>
+        <div class="card p-6 mt-6 border-indigo-100"><div class="text-sm text-primary font-semibold">RECOMMENDED CANDIDATE</div><div class="text-2xl font-bold mt-2">Candidate 001</div><p class="text-muted mt-2">Highest overall semantic and skill alignment.</p></div>
+      </section>
+
+      <!-- REPORTS -->
+      <section x-show="route==='reports'">
+        <h1 class="text-3xl font-bold">Recruitment Reports</h1><p class="text-muted mt-2">Review recruitment performance and candidate insights.</p>
+        <div class="grid md:grid-cols-2 gap-5 mt-6"><template x-for="r in reports" :key="r.title"><div class="card p-6"><div class="text-2xl" x-text="r.icon"></div><h2 class="font-bold text-lg mt-4" x-text="r.title"></h2><p class="text-muted mt-2" x-text="r.desc"></p><button class="btn btn-secondary mt-5" @click="reportMessage=r.title+' opened'">View Report</button></div></template></div><div x-show="reportMessage" class="mt-5 bg-green-50 text-green-700 rounded-xl p-4" x-text="reportMessage"></div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section x-show="route==='settings'">
+        <h1 class="text-3xl font-bold">Settings</h1><p class="text-muted mt-2">Configure matching and fairness preferences.</p>
+        <div class="card p-6 mt-6 max-w-3xl"><h2 class="font-bold text-lg">Matching Settings</h2><template x-for="s in ['semantic','skillsWeight','experienceWeight']" :key="s"><div class="mt-6"><div class="flex justify-between text-sm font-semibold"><span x-text="s==='semantic'?'Semantic Matching':s==='skillsWeight'?'Skill Matching':'Experience'"></span><span x-text="settings[s]+'%'"></span></div><input type="range" min="0" max="100" x-model="settings[s]" class="w-full mt-2 accent-indigo-700"></div></template><div class="mt-8 space-y-4"><label class="flex justify-between"><span>Enable blind matching</span><input type="checkbox" x-model="settings.blindMatching"></label><label class="flex justify-between"><span>Show bias-risk indicators</span><input type="checkbox" x-model="settings.biasIndicators"></label></div><button @click="saveSettings()" class="btn btn-primary mt-7">Save Settings</button><div x-show="saved" class="text-green-600 text-sm mt-3">Settings saved successfully.</div></div>
+      </section>
+
+    </main>
+  </div>
+</div>
+</template>
+
+<script>
+function app(){
+return {
+loggedIn: localStorage.getItem('resumeMatchUser') ? true : false,
+email:'',password:'',loginError:false,mobileMenu:false,notifications:false,route:location.hash.replace('#','')||'dashboard',
+jobSearch:'',jobFilter:'All',rankFilter:'All',files:[],selectedJob:null,
+selectedCandidate:{id:'001',name:'Candidate 001',overall:94,semantic:96,skillsScore:92,experience:89,education:90,bias:'Low',original:94,blind:93,status:'Review',matched:['Python','Flask','SQL','REST API','Machine Learning','Git'],missing:['AWS','Docker']},
+shortlisted:JSON.parse(localStorage.getItem('resumeShortlist')||'[]'),
+settings:JSON.parse(localStorage.getItem('resumeSettings')||'{"semantic":40,"skillsWeight":30,"experienceWeight":20,"blindMatching":true,"biasIndicators":true}'),
+saved:false,reportMessage:'',analysisStep:0,analysisProgress:0,analysisTimer:null,
+nav:[
+{route:'dashboard',label:'Dashboard',icon:'▦'},{route:'jobs',label:'Jobs',icon:'▤'},
+{route:'matcher',label:'Resume Matcher',icon:'⌁'},{route:'rankings',label:'Candidates',icon:'◎'},
+{route:'bias-check',label:'Bias Check',icon:'◌'},{route:'reports',label:'Reports',icon:'▥'},
+{route:'settings',label:'Settings',icon:'⚙'}
+],
+stats:[{label:'Active Jobs',value:24,trend:'+12% this month',icon:'◈',route:'jobs'},{label:'Resumes Analyzed',value:156,trend:'+18% this month',icon:'▤',route:'rankings'},{label:'Shortlisted',value:38,trend:'+8% this month',icon:'✓',route:'rankings'},{label:'Average Match Score',value:'84%',trend:'+4% this month',icon:'◉',route:'reports'}],
+jobs:[
+{id:'j1',title:'Python Developer',department:'Engineering',location:'Remote',experience:'2–4 years',candidates:24,match:89,status:'Active'},
+{id:'j2',title:'Machine Learning Engineer',department:'AI & Data',location:'Bangalore',experience:'1–3 years',candidates:18,match:86,status:'Active'},
+{id:'j3',title:'Data Analyst',department:'Analytics',location:'Remote',experience:'2–4 years',candidates:31,match:81,status:'Active'},
+{id:'j4',title:'Frontend Developer',department:'Engineering',location:'Hyderabad',experience:'2–5 years',candidates:16,match:84,status:'Closed'}],
+candidates:[
+{id:'001',name:'Candidate 001',overall:94,semantic:96,skillsScore:92,experience:89,education:90,bias:'Low',original:94,blind:93,status:'Review',matched:['Python','Flask','SQL','REST API','Machine Learning','Git'],missing:['AWS','Docker']},
+{id:'007',name:'Candidate 007',overall:89,semantic:91,skillsScore:87,experience:86,education:88,bias:'Low',original:89,blind:88,status:'Review',matched:['Python','SQL','REST API'],missing:['AWS','Docker','Flask']},
+{id:'004',name:'Candidate 004',overall:84,semantic:86,skillsScore:91,experience:78,education:85,bias:'Medium',original:84,blind:70,status:'Review',matched:['Python','SQL','Machine Learning'],missing:['AWS','Docker','Flask']},
+{id:'011',name:'Candidate 011',overall:79,semantic:82,skillsScore:78,experience:76,education:84,bias:'Low',original:79,blind:78,status:'Review',matched:['Python','SQL'],missing:['AWS','Docker','Flask','Machine Learning']}],
+newJob:{title:'',department:'',location:'',type:'Full-time',experience:'',education:'',skills:['Python','Flask','SQL','REST API','Machine Learning','AWS','Docker'],description:''},
+analysisSteps:['Extracting resume text','Processing job description','Generating semantic embeddings','Comparing candidate profiles','Analyzing skill gaps','Running blind resume analysis','Generating explainable results'],
+reports:[{title:'Candidate Ranking Report',desc:'Ranked candidates by match score and fit.',icon:'▥'},{title:'Skill Gap Report',desc:'Required versus candidate skill coverage.',icon:'◈'},{title:'Bias Analysis Report',desc:'Original versus blind matching signals.',icon:'◌'},{title:'Job Matching Summary',desc:'Overall job and candidate performance.',icon:'◉'}],
+get filteredJobs(){return this.jobs.filter(j=>(this.jobFilter==='All'||j.status===this.jobFilter)&&j.title.toLowerCase().includes(this.jobSearch.toLowerCase()))},
+get selectedSkills(){return ['Python','Flask','SQL','REST API','Machine Learning','AWS','Docker']},
+get filteredCandidates(){return this.candidates.filter(c=>this.rankFilter==='All'||(this.rankFilter==='Strong Match'&&c.overall>=90)||(this.rankFilter==='Medium Match'&&c.overall<90&&c.overall>=80)||(this.rankFilter==='Potential Bias'&&c.bias!=='Low')||(this.rankFilter==='Shortlisted'&&c.status==='Shortlisted'))},
+get rankingStats(){return [['Average Match','84%'],['Top Candidate','94%'],['Strong Matches','6'],['Potential Bias Flags','2']]},
+init(){window.addEventListener('hashchange',()=>{this.route=location.hash.replace('#','')||'dashboard';this.selectedCandidate=this.candidates.find(c=>this.route==='candidate'&&c.id===this.selectedCandidate.id)||this.selectedCandidate});if(!this.loggedIn) this.route='login';},
+login(){if(this.email==='admin@resumematch.ai'&&this.password==='admin123'){this.loggedIn=true;localStorage.setItem('resumeMatchUser','true');this.loginError=false;this.go('dashboard')}else this.loginError=true},
+demoLogin(){this.email='admin@resumematch.ai';this.password='admin123';this.login()},
+logout(){localStorage.removeItem('resumeMatchUser');this.loggedIn=false;this.go('login')},
+go(r){if(r==='login'){this.route='login';location.hash='login';return}this.route=r;location.hash=r},
+selectJob(j){this.selectedJob=j;this.go('matcher')},
+filesChanged(e){this.files=[...this.files,...[...e.target.files].map(f=>({name:f.name,size:(f.size/1024).toFixed(1)+' KB'}))]},
+startAnalysis(){this.go('analysis');this.analysisStep=0;this.analysisProgress=0;clearInterval(this.analysisTimer);this.analysisTimer=setInterval(()=>{this.analysisStep++;this.analysisProgress=Math.min(100,this.analysisStep/this.analysisSteps.length*100);if(this.analysisStep>=this.analysisSteps.length){clearInterval(this.analysisTimer);setTimeout(()=>this.go('rankings'),500)}},400)},
+shortlist(){this.selectedCandidate.status=this.selectedCandidate.status==='Shortlisted'?'Review':'Shortlisted';localStorage.setItem('resumeShortlist',JSON.stringify(this.candidates.filter(c=>c.status==='Shortlisted').map(c=>c.id)))},
+addSkill(e){let v=e.target.value.trim();if(v&&!this.newJob.skills.includes(v))this.newJob.skills.push(v);e.target.value=''},
+saveDraft(){this.jobs.push({id:'j'+Date.now(),title:this.newJob.title||'Untitled Job',department:this.newJob.department||'Engineering',location:this.newJob.location||'Remote',experience:this.newJob.experience||'2–4 years',candidates:0,match:0,status:'Draft'});this.go('jobs')},
+continueMatcher(){this.selectedJob={...this.newJob,title:this.newJob.title||'Python Developer'};this.go('matcher')},
+saveSettings(){localStorage.setItem('resumeSettings',JSON.stringify(this.settings));this.saved=true;setTimeout(()=>this.saved=false,2000)},
+riskClass(r){return r==='Low'?'bg-green-50 text-green-700':r==='Medium'?'bg-amber-50 text-amber-700':'bg-red-50 text-red-700'}
+}
+}
+</script>
+</body>
+</html>
