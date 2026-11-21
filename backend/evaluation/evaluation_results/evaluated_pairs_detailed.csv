@@ -1,0 +1,51 @@
+Pair_Id,Target_Domain,Job_Title,Resume_Id,Resume_Category,Pair_Type,Ground_Truth,Semantic_Score,Skill_Score,Experience_Score,Education_Score,Overall_Score
+GT_001,Data Science,Data Scientist - Sql/nosql,RES_0001,Data Science,Congruent (Positive),1,5.49,40.0,75.0,85.0,37.7
+GT_002,Data Science,Data Scientist - Sql/nosql,RES_0002,Data Science,Congruent (Positive),1,5.31,20.0,75.0,70.0,30.13
+GT_003,Data Science,Data Scientist - Sql/nosql,RES_0003,Data Science,Congruent (Positive),1,7.22,40.0,75.0,85.0,38.39
+GT_004,Data Science,Data Scientist - Sql/nosql,RES_0004,Data Science,Congruent (Positive),1,7.34,60.0,75.0,85.0,44.43
+GT_005,Data Science,Data Scientist - Sql/nosql,RES_0005,Data Science,Congruent (Positive),1,5.05,20.0,75.0,95.0,32.52
+GT_006,Data Science,Data Scientist - Sql/nosql,RES_0021,Advocate,Incongruent (Negative),0,0.0,0.0,75.0,70.0,22.0
+GT_007,Data Science,Data Scientist - Sql/nosql,RES_0022,Advocate,Incongruent (Negative),0,0.0,0.0,75.0,70.0,22.0
+GT_008,Data Science,Data Scientist - Sql/nosql,RES_0023,Advocate,Incongruent (Negative),0,0.0,0.0,75.0,70.0,22.0
+GT_009,Data Science,Data Scientist - Sql/nosql,RES_0024,Advocate,Incongruent (Negative),0,0.4,0.0,75.0,85.0,23.66
+GT_010,Data Science,Data Scientist - Sql/nosql,RES_0025,Advocate,Incongruent (Negative),0,1.45,0.0,75.0,85.0,24.08
+GT_011,Java Developer,Back End Java Developer - Restful Services/soap,RES_0063,Java Developer,Congruent (Positive),1,6.57,0.0,75.0,85.0,26.13
+GT_012,Java Developer,Back End Java Developer - Restful Services/soap,RES_0064,Java Developer,Congruent (Positive),1,5.95,10.0,75.0,85.0,28.88
+GT_013,Java Developer,Back End Java Developer - Restful Services/soap,RES_0065,Java Developer,Congruent (Positive),1,6.63,20.0,75.0,85.0,32.15
+GT_014,Java Developer,Back End Java Developer - Restful Services/soap,RES_0066,Java Developer,Congruent (Positive),1,6.05,20.0,75.0,85.0,31.92
+GT_015,Java Developer,Back End Java Developer - Restful Services/soap,RES_0067,Java Developer,Congruent (Positive),1,5.76,20.0,75.0,95.0,32.8
+GT_016,Java Developer,Back End Java Developer - Restful Services/soap,RES_0021,Advocate,Incongruent (Negative),0,0.3,0.0,75.0,70.0,22.12
+GT_017,Java Developer,Back End Java Developer - Restful Services/soap,RES_0022,Advocate,Incongruent (Negative),0,0.0,0.0,75.0,70.0,22.0
+GT_018,Java Developer,Back End Java Developer - Restful Services/soap,RES_0023,Advocate,Incongruent (Negative),0,0.0,0.0,75.0,70.0,22.0
+GT_019,Java Developer,Back End Java Developer - Restful Services/soap,RES_0024,Advocate,Incongruent (Negative),0,0.4,0.0,75.0,85.0,23.66
+GT_020,Java Developer,Back End Java Developer - Restful Services/soap,RES_0025,Advocate,Incongruent (Negative),0,1.65,0.0,75.0,85.0,24.16
+GT_021,Python Developer,Python Developer,RES_0104,Python Developer,Congruent (Positive),1,5.21,100.0,100.0,70.0,59.08
+GT_022,Python Developer,Python Developer,RES_0105,Python Developer,Congruent (Positive),1,6.53,100.0,75.0,85.0,56.11
+GT_023,Python Developer,Python Developer,RES_0106,Python Developer,Congruent (Positive),1,6.14,100.0,75.0,95.0,56.96
+GT_024,Python Developer,Python Developer,RES_0107,Python Developer,Congruent (Positive),1,4.03,100.0,75.0,85.0,55.11
+GT_025,Python Developer,Python Developer,RES_0108,Python Developer,Congruent (Positive),1,3.07,100.0,75.0,85.0,54.73
+GT_026,Python Developer,Python Developer,RES_0021,Advocate,Incongruent (Negative),0,0.0,0.0,75.0,70.0,22.0
+GT_027,Python Developer,Python Developer,RES_0022,Advocate,Incongruent (Negative),0,0.0,0.0,75.0,70.0,22.0
+GT_028,Python Developer,Python Developer,RES_0023,Advocate,Incongruent (Negative),0,0.0,0.0,75.0,70.0,22.0
+GT_029,Python Developer,Python Developer,RES_0024,Advocate,Incongruent (Negative),0,0.51,0.0,75.0,85.0,23.7
+GT_030,Python Developer,Python Developer,RES_0025,Advocate,Incongruent (Negative),0,1.05,0.0,75.0,85.0,23.92
+GT_031,DevOps Engineer,Opportunity For Azure Devops Architect For Hyderabad Location,RES_0110,DevOps Engineer,Congruent (Positive),1,4.84,25.0,75.0,95.0,33.94
+GT_032,DevOps Engineer,Opportunity For Azure Devops Architect For Hyderabad Location,RES_0111,DevOps Engineer,Congruent (Positive),1,2.54,12.5,75.0,75.0,27.27
+GT_033,DevOps Engineer,Opportunity For Azure Devops Architect For Hyderabad Location,RES_0112,DevOps Engineer,Congruent (Positive),1,4.21,12.5,75.0,95.0,29.93
+GT_034,DevOps Engineer,Opportunity For Azure Devops Architect For Hyderabad Location,RES_0113,DevOps Engineer,Congruent (Positive),1,4.1,37.5,75.0,95.0,37.39
+GT_035,DevOps Engineer,Opportunity For Azure Devops Architect For Hyderabad Location,RES_0114,DevOps Engineer,Congruent (Positive),1,2.14,0.0,75.0,85.0,24.36
+GT_036,DevOps Engineer,Opportunity For Azure Devops Architect For Hyderabad Location,RES_0021,Advocate,Incongruent (Negative),0,0.31,0.0,75.0,70.0,22.12
+GT_037,DevOps Engineer,Opportunity For Azure Devops Architect For Hyderabad Location,RES_0022,Advocate,Incongruent (Negative),0,0.0,0.0,75.0,70.0,22.0
+GT_038,DevOps Engineer,Opportunity For Azure Devops Architect For Hyderabad Location,RES_0023,Advocate,Incongruent (Negative),0,0.0,0.0,75.0,70.0,22.0
+GT_039,DevOps Engineer,Opportunity For Azure Devops Architect For Hyderabad Location,RES_0024,Advocate,Incongruent (Negative),0,1.12,0.0,75.0,85.0,23.95
+GT_040,DevOps Engineer,Opportunity For Azure Devops Architect For Hyderabad Location,RES_0025,Advocate,Incongruent (Negative),0,1.35,0.0,75.0,85.0,24.04
+GT_041,HR,HR Executive,RES_0011,HR,Congruent (Positive),1,2.63,0.0,75.0,95.0,25.55
+GT_042,HR,HR Executive,RES_0012,HR,Congruent (Positive),1,4.88,11.11,75.0,85.0,28.79
+GT_043,HR,HR Executive,RES_0013,HR,Congruent (Positive),1,5.82,11.11,75.0,70.0,27.66
+GT_044,HR,HR Executive,RES_0014,HR,Congruent (Positive),1,6.32,11.11,75.0,70.0,27.86
+GT_045,HR,HR Executive,RES_0015,HR,Congruent (Positive),1,4.7,11.11,75.0,85.0,28.71
+GT_046,HR,HR Executive,RES_0021,Advocate,Incongruent (Negative),0,1.17,0.0,75.0,70.0,22.47
+GT_047,HR,HR Executive,RES_0022,Advocate,Incongruent (Negative),0,2.15,11.11,75.0,70.0,26.19
+GT_048,HR,HR Executive,RES_0023,Advocate,Incongruent (Negative),0,1.91,11.11,75.0,70.0,26.1
+GT_049,HR,HR Executive,RES_0024,Advocate,Incongruent (Negative),0,1.25,11.11,75.0,85.0,27.33
+GT_050,HR,HR Executive,RES_0025,Advocate,Incongruent (Negative),0,2.02,22.22,75.0,85.0,30.98

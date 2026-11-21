@@ -1,0 +1,10 @@
+Metric,Value
+Total Candidates Evaluated,30
+Average Match Score (Original),27.94%
+Average Match Score (Anonymized),27.95%
+Mean Absolute Score Difference,0.02%
+Maximum Score Difference,0.12%
+Candidates with Rank Shift (Count),0 / 30
+Candidates with Rank Shift (%),0.0%
+Average Rank Shift (Positions),0.00
+Spearman Rank Correlation,1.0000

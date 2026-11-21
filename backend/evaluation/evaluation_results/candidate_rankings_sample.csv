@@ -1,0 +1,11 @@
+Target_Job,Rank,Resume_Id,Category,Semantic_Score,Skill_Score,Experience_Score,Education_Score,Overall_Score,Matched_Skills,Missing_Skills
+Data Scientist - Sql/nosql,1,RES_0004,Data Science,9.99,60.0,75.0,85.0,45.5,"SQL, R, Python, Machine Learning, Data Science","NoSQL, Scala, Data Visualization, Data Modeling"
+Data Scientist - Sql/nosql,2,RES_0007,Data Science,21.14,50.0,75.0,70.0,45.46,"R, Python, Data Visualization, Machine Learning, Data Science","SQL, NoSQL, Scala, Data Modeling, Algorithm"
+Data Scientist - Sql/nosql,3,RES_0010,Data Science,18.54,50.0,75.0,70.0,44.42,"R, Python, Data Visualization, Machine Learning, Data Science","SQL, NoSQL, Scala, Data Modeling, Algorithm"
+Data Scientist - Sql/nosql,4,RES_0135,Database,10.67,50.0,75.0,70.0,41.27,"SQL, R, Python, Machine Learning, Data Science","NoSQL, Scala, Data Visualization, Data Modeling, Algorithm"
+Data Scientist - Sql/nosql,5,RES_0009,Data Science,9.61,40.0,75.0,95.0,40.34,"SQL, Python, Machine Learning, Data Science","NoSQL, R, Scala, Data Visualization, Data Modeling"
+Data Scientist - Sql/nosql,6,RES_0003,Data Science,11.74,40.0,75.0,85.0,40.2,"SQL, Python, Machine Learning, Data Science","NoSQL, R, Scala, Data Visualization, Data Modeling"
+Data Scientist - Sql/nosql,7,RES_0136,Hadoop,9.03,40.0,75.0,85.0,39.11,"SQL, NoSQL, Python, Scala","R, Data Visualization, Machine Learning, Data Science, Data Modeling"
+Data Scientist - Sql/nosql,8,RES_0008,Data Science,8.65,40.0,75.0,85.0,38.96,"SQL, Python, Machine Learning, Data Science","NoSQL, R, Scala, Data Visualization, Data Modeling"
+Data Scientist - Sql/nosql,9,RES_0001,Data Science,7.67,40.0,75.0,85.0,38.57,"SQL, Python, Machine Learning, Data Science","NoSQL, R, Scala, Data Visualization, Data Modeling"
+Data Scientist - Sql/nosql,10,RES_0139,Hadoop,5.94,40.0,75.0,85.0,37.88,"NoSQL, Python, Scala, Machine Learning","SQL, R, Data Visualization, Data Science, Data Modeling"

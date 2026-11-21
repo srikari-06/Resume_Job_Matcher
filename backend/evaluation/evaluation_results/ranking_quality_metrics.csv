@@ -1,0 +1,7 @@
+Job_Title,Target_Domain,Total_Pool_Size,Total_Relevant_In_Pool,Model_P@5,Model_P@10,Model_NDCG@5,Model_NDCG@10,Model_MRR,Baseline_P@5,Baseline_P@10,Baseline_NDCG@5,Baseline_NDCG@10,Baseline_MRR
+Data Scientist - Sql/nosql,Data Science,166,10,0.8,0.7,0.8539,0.7682,1.0,0.8,0.5,0.786,0.5885,1.0
+Back End Java Developer - Restful Services/soap,Java Developer,166,13,0.2,0.4,0.214,0.3503,0.5,0.0,0.2,0.0,0.137,0.1429
+Python Developer,Python Developer,166,6,0.8,0.5,0.8688,0.8626,1.0,0.0,0.1,0.0,0.0911,0.1111
+Opportunity For Azure Devops Architect For Hyderabad Location,DevOps Engineer,166,7,0.6,0.4,0.7227,0.6725,1.0,0.6,0.3,0.6992,0.5667,1.0
+HR Executive,HR,166,10,0.2,0.1,0.1312,0.0851,0.2,0.2,0.1,0.214,0.1389,0.5
+MACRO-AVERAGE,ALL 5 DOMAINS,166,9,0.52,0.42,0.5581,0.5477,0.74,0.32,0.24,0.3398,0.3044,0.5508
